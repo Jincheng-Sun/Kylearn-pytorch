@@ -75,8 +75,8 @@ class TransormerClassifierModel(Model):
             self.USE_EMBEDDING = True
 
         # --------------------------- Classifier --------------------------- #
-        self.classifier = LinearClassifier(d_features * max_length, d_classifier, n_classes)
-        
+        self.classifier = LinearClassifier(d_features, max_length, d_classifier, n_classes)
+
         # ------------------------------ CUDA ------------------------------ #
         self.data_parallel()
 
@@ -130,7 +130,7 @@ class TransormerClassifierModel(Model):
             # forward
             self.optimizer.zero_grad()
             logits, attn = self.model(input_feature_sequence, position, non_pad_mask, slf_attn_mask)
-            logits = logits.view(batch_size, -1)
+            # logits = logits.view(batch_size, -1)
             logits = self.classifier(logits)
 
             # Judge if it's a regression problem
@@ -205,7 +205,7 @@ class TransormerClassifierModel(Model):
 
                 # get logits
                 logits, attn = self.model(input_feature_sequence, position, non_pad_mask, slf_attn_mask)
-                logits = logits.view(batch_size, -1)
+                # logits = logits.view(batch_size, -1)
                 logits = self.classifier(logits)
 
                 if self.d_output == 1:
